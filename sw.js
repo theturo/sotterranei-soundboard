@@ -1,10 +1,12 @@
 // Service worker: guscio dell'app in cache per l'uso offline; i dati cifrati li gestisce app.js (cache "sb-data").
-const SHELL = "sb-shell-20261025230608";
+const SHELL = "sb-shell-20261025231643";
 const FILES = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
+// La nuova versione resta "in attesa" finché l'utente non preme «Aggiorna» nel banner dell'app.
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(FILES)));
 });
+self.addEventListener("message", (e) => { if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting(); });
 self.addEventListener("activate", (e) => {
   e.waitUntil(caches.keys()
     .then((ks) => Promise.all(ks.filter((k) => k.startsWith("sb-shell-") && k !== SHELL).map((k) => caches.delete(k))))

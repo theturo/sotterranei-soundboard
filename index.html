@@ -66,10 +66,16 @@
   <label class="row"><input id="optText" type="checkbox"> Mostra il testo della frase</label>
   <button id="bReset" class="ghost">Azzera lo storico delle estrazioni</button>
   <button id="bForget" class="ghost danger">Dimentica password e audio offline</button>
+  <button id="bUpd" class="ghost">Controlla aggiornamenti</button>
   <p id="ver" class="small"></p>
   <button id="bClose" class="main">Chiudi</button>
 </dialog>
 
+<div id="upd" class="upd" hidden role="alert">
+  <span>Nuova versione disponibile</span>
+  <button id="updBtn" class="main">Aggiorna</button>
+  <button id="updX" aria-label="Più tardi">✕</button>
+</div>
 <div id="toast" role="status"></div>
 <script src="app.js"></script>
 </body>

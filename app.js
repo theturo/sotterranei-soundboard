@@ -60,8 +60,38 @@ async function scarica(nome) {
 }
 
 /* ---------- avvio ---------- */
+/* ---------- aggiornamenti dell'app ---------- */
+let swReg = null, ricaricaAlCambio = false;
+function mostraBanner(worker) {
+  $("upd").hidden = false;
+  $("updBtn").onclick = () => { ricaricaAlCambio = true; worker.postMessage({ type: "SKIP_WAITING" }); };
+  $("updX").onclick = () => { $("upd").hidden = true; };
+}
+function registraSW() {
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker.register("sw.js").then((r) => {
+    swReg = r;
+    if (r.waiting && navigator.serviceWorker.controller) mostraBanner(r.waiting);
+    r.addEventListener("updatefound", () => {
+      const w = r.installing;
+      w.addEventListener("statechange", () => { if (w.state === "installed" && navigator.serviceWorker.controller) mostraBanner(w); });
+    });
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (ricaricaAlCambio) location.reload(); });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && swReg) swReg.update().catch(() => {}); });
+}
+async function controllaAggiornamenti() {
+  if (!swReg) { toast("Aggiornamenti non disponibili su questo dispositivo."); return; }
+  try {
+    await swReg.update();
+    await new Promise((r) => setTimeout(r, 1500));
+    if (!swReg.installing && !swReg.waiting) toast("Sei già all'ultima versione ✓");
+    else $("settings").close();
+  } catch (e) { toast("Impossibile controllare: sei offline?"); }
+}
+
 async function boot() {
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  registraSW();
   try { meta = await (await fetch(DATA + "meta.json", { cache: "no-cache" })).json(); }
   catch (e) { $("lock").hidden = false; $("lockMsg").textContent = "Impossibile caricare i dati. Connettiti almeno la prima volta."; return; }
   key = await kv("get", "key").catch(() => null);
@@ -250,6 +280,7 @@ function impostazioni() {
 }
 $("btnSet").onclick = () => $("settings").showModal();
 $("bClose").onclick = () => $("settings").close();
+$("bUpd").onclick = controllaAggiornamenti;
 $("optVib").onchange = (e) => { S.opt.vib = e.target.checked; salva(); };
 $("optText").onchange = (e) => { S.opt.text = e.target.checked; salva(); const u = S.hist[S.hist.length - 1]; if (u) mostraOra(byId.get(u.id)); };
 $("optWake").onchange = (e) => { S.opt.wake = e.target.checked; salva(); schermoAcceso(S.opt.wake); };
