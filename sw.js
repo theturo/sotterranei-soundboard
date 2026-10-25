@@ -1,5 +1,5 @@
 // Service worker: guscio dell'app in cache per l'uso offline; i dati cifrati li gestisce app.js (cache "sb-data").
-const SHELL = "sb-shell-20261025225426";
+const SHELL = "sb-shell-20261025230608";
 const FILES = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", (e) => {
