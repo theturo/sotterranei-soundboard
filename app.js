@@ -229,7 +229,9 @@ function disegnaGriglia() {
     const b = document.createElement("button");
     b.className = "tile" + (c.k === "CRE" ? " lockd" : ""); b.dataset.k = c.k;
     b.innerHTML = `<span class="holdring"></span><span class="ic"></span><span class="lb"></span>` + (c.k === "CRE" ? "<small>tieni premuto</small>" : "");
-    b.querySelector(".ic").textContent = c.icona; b.querySelector(".lb").textContent = c.breve;
+    // L'SVG viene dal catalogo cifrato prodotto dalla build: contenuto proprio, non input esterno.
+    b.querySelector(".ic").innerHTML = c.svg ? `<svg viewBox="0 0 24 24" aria-hidden="true">${c.svg}</svg>` : "";
+    b.querySelector(".lb").textContent = c.breve;
     if (c.k === "CRE") holdable(b, () => perCategoria("CRE")); else b.addEventListener("click", () => perCategoria(c.k));
     g.appendChild(b);
   }

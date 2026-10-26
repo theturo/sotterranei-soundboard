@@ -1,5 +1,5 @@
 // Service worker: guscio dell'app in cache per l'uso offline; i dati cifrati li gestisce app.js (cache "sb-data").
-const SHELL = "sb-shell-20261025231643";
+const SHELL = "sb-shell-20261026195900";
 const FILES = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
 // La nuova versione resta "in attesa" finché l'utente non preme «Aggiorna» nel banner dell'app.
