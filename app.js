@@ -145,7 +145,8 @@ async function precarica() {
 
 /* ---------- selezione: mazzo senza reinserimento + penalità per motivi e recenza ---------- */
 function pool(k) {
-  return k === "CRE" ? catalogo.frasi.filter((f) => f.reg === "C") : catalogo.frasi.filter((f) => f.k === k && f.reg !== "C");
+  // Le frasi "solo libreria" (lib) sono situazionali: si suonano a mano, non vengono estratte.
+  return k === "CRE" ? catalogo.frasi.filter((f) => f.reg === "C") : catalogo.frasi.filter((f) => f.k === k && f.reg !== "C" && !f.lib);
 }
 function estrai(k) {
   const p = pool(k); if (!p.length) return null;
@@ -252,7 +253,7 @@ function disegnaLista() {
     const cat = catalogo.categorie.find((c) => c.k === f.k);
     li.innerHTML = '<span class="holdring"></span><div class="t"></div><span class="badge"></span>';
     li.querySelector(".t").textContent = f.testo;
-    const m = document.createElement("span"); m.className = "meta"; m.textContent = cat ? cat.nome : ""; li.querySelector(".t").appendChild(m);
+    const m = document.createElement("span"); m.className = "meta"; m.textContent = (cat ? cat.nome : "") + (f.lib ? " · solo libreria" : ""); li.querySelector(".t").appendChild(m);
     li.querySelector(".badge").textContent = f.reg === "C" ? "🔒" : f.reg;
     if (f.reg === "C") holdable(li, () => riproduci(f.id, "CRE")); else li.addEventListener("click", () => { vibra(20); riproduci(f.id, f.k); });
     ul.appendChild(li);
